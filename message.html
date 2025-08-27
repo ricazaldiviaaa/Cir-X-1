@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Message</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .bg-animate {
+      background: linear-gradient(-45deg, #fff0f5, #fde2e4, #fce7f3, #fdf2f8);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    }
+    @keyframes float { 0% { transform: translateY(0) scale(1); opacity: 0.9; } 100% { transform: translateY(-120vh) scale(1.5); opacity: 0; } }
+    .floaty { position: absolute; bottom: -40px; animation: float linear infinite; opacity: 0.6; }
+    @keyframes glow { 0% { box-shadow: 0 0 10px rgba(236,72,153,0.4), 0 0 20px rgba(236,72,153,0.2);} 50% { box-shadow: 0 0 20px rgba(236,72,153,0.6), 0 0 40px rgba(236,72,153,0.3);} 100% { box-shadow: 0 0 10px rgba(236,72,153,0.4), 0 0 20px rgba(236,72,153,0.2);} }
+    .glow-card { animation: glow 3s ease-in-out infinite; }
+    @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeInUp 1s ease forwards; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-thumb { background: rgba(236, 72, 153, 0.5); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.8); }
+  </style>
+</head>
+<body class="min-h-screen bg-animate text-gray-800 font-sans relative overflow-hidden">
+
+  <!-- Floating decorations -->
+  <svg class="floaty left-1/4 w-8 h-8 text-pink-400" style="animation-duration: 7s;" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M12 21s-6.5-4.35-10-9.05C-1.1 7.54 1.75 2 7.5 2c2.4 0 4.6 1.21 5.5 3.09C13.9 3.21 16.1 2 18.5 2 24.25 2 27.1 7.54 22 11.95 18.5 16.65 12 21 12 21z"/>
+  </svg>
+  <svg class="floaty left-2/3 w-10 h-10 text-pink-300" style="animation-duration: 11s;" fill="currentColor" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="4"/>
+  </svg>
+  <svg class="floaty left-1/2 w-6 h-6 text-yellow-300" style="animation-duration: 9s;" fill="currentColor" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="2"/>
+  </svg>
+
+  <!-- Hidden Audio -->
+  <audio id="bg-music" loop autoplay style="display:none;">
+    <source src="assets/nothing.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Content -->
+  <div class="relative z-10 min-h-screen flex flex-col px-4 sm:px-6 py-6 sm:py-10 fade-in">
+    <!-- Back button -->
+    <a href="home.html" class="self-start mb-4 sm:mb-6 inline-flex items-center text-pink-700 hover:text-pink-900 transition">
+      <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+      </svg>
+      Back
+    </a>
+
+    <!-- Message card -->
+    <div class="flex-1 max-w-3xl mx-auto w-full bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-5 sm:p-8 md:p-10 flex flex-col glow-card">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 text-pink-700 text-center">
+        My Message to You
+      </h2>
+      <div class="overflow-y-auto pr-2" style="max-height: 65vh;">
+        <p class="text-base sm:text-lg md:text-xl leading-relaxed text-gray-700 whitespace-pre-line text-left">
+          From the moment we met, you’ve filled my life with joy, laughter, and love.  
+          You are my safe place, my adventure, and my greatest blessing.  
+
+          On this special day, I just want to remind you that no matter where life takes us,  
+          my heart will always belong to you.  
+
+          Here’s to more sunsets together, more silly moments, and a lifetime of love. 💖  
+
+          (Add more of your long anniversary message here 💌)
+        </p>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const audio = document.getElementById("bg-music");
+
+  // Restore state on load
+  window.addEventListener("DOMContentLoaded", () => {
+    const savedTime = localStorage.getItem("music-time");
+    const isPlaying = localStorage.getItem("music-playing");
+
+    if (savedTime) audio.currentTime = parseFloat(savedTime);
+
+    if (isPlaying === "true") {
+      audio.play().catch(()=>{});
+    } else {
+      audio.pause();
+    }
+  });
+
+  // Save state before leaving
+  window.addEventListener("beforeunload", () => {
+    localStorage.setItem("music-time", audio.currentTime);
+    localStorage.setItem("music-playing", !audio.paused);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Love Theme Line Loader</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .bg-animate {
+      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+      background-size: 400% 400%;
+      animation: gradient 12s ease infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
+    }
+    .heart {
+      position: absolute;
+      bottom: -50px;
+      fill: rgba(255,255,255,0.85);
+      animation: float linear infinite;
+    }
+    @keyframes line-bounce {
+      0%, 40%, 100% { transform: scaleY(0.3); }
+      20% { transform: scaleY(1); }
+    }
+    .line { 
+      display: inline-block;
+      width: 4px;
+      height: 20px;
+      margin: 0 2px;
+      background: white;
+      border-radius: 2px;
+      animation: line-bounce 1.2s infinite ease-in-out;
+    }
+    .line:nth-child(1) { animation-delay: -0.24s; }
+    .line:nth-child(2) { animation-delay: -0.12s; }
+    .line:nth-child(3) { animation-delay: 0; }
+    .line:nth-child(4) { animation-delay: 0.12s; }
+    .line:nth-child(5) { animation-delay: 0.24s; }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-animate overflow-hidden">
+  
+  <!-- Background hearts -->
+  <svg class="heart left-1/4 w-8 h-8" style="animation-duration: 6s;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M12 21s-6.5-4.35-10-9.05C-1.1 7.54 1.75 2 7.5 2c2.4 0 4.6 1.21 5.5 3.09C13.9 3.21 16.1 2 18.5 2 24.25 2 27.1 7.54 22 11.95 18.5 16.65 12 21 12 21z"/>
+  </svg>
+  <svg class="heart left-2/3 w-10 h-10" style="animation-duration: 8s;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M12 21s-6.5-4.35-10-9.05C-1.1 7.54 1.75 2 7.5 2c2.4 0 4.6 1.21 5.5 3.09C13.9 3.21 16.1 2 18.5 2 24.25 2 27.1 7.54 22 11.95 18.5 16.65 12 21 12 21z"/>
+  </svg>
+
+  <!-- Loader -->
+  <div class="relative flex flex-col items-center gap-4 z-10">
+    <div class="flex items-center justify-center gap-1">
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+    <span class="text-white font-medium tracking-wide">Loading with Love...</span>
+  </div>
+
+  <!-- Hidden background music -->
+  <audio id="bg-music" autoplay loop hidden>
+    <source src="your-music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const audio = document.getElementById("bg-music");
+
+    // Restore previous time
+    const savedTime = localStorage.getItem("audioTime");
+    if (savedTime) {
+      audio.currentTime = parseFloat(savedTime);
+    }
+
+    audio.play().catch(() => {
+      console.log("Autoplay blocked by browser");
+    });
+
+    // Save current time before leaving
+    window.addEventListener("beforeunload", () => {
+      localStorage.setItem("audioTime", audio.currentTime);
+    });
+
+    // Redirect after 3s
+    const params = new URLSearchParams(window.location.search);
+    const redirectPage = params.get("redirect") || "home.html";
+
+    setTimeout(() => {
+      window.location.href = redirectPage;
+    }, 3000);
+  </script>
+</body>
+</html>
