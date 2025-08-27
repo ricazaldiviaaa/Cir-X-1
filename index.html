@@ -12,7 +12,6 @@
       100% { background-position: 0% 50%; }
     }
     .bg-animate {
-      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
       background-size: 400% 400%;
       animation: gradient 12s ease infinite;
     }
@@ -35,7 +34,6 @@
       width: 4px;
       height: 20px;
       margin: 0 2px;
-      background: white;
       border-radius: 2px;
       animation: line-bounce 1.2s infinite ease-in-out;
     }
@@ -46,7 +44,7 @@
     .line:nth-child(5) { animation-delay: 0.24s; }
   </style>
 </head>
-<body class="flex items-center justify-center bg-animate overflow-hidden">
+<body class="flex items-center justify-center overflow-hidden">
   
   <!-- Background hearts -->
   <svg class="heart left-1/4 w-8 h-8" style="animation-duration: 6s;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -58,14 +56,14 @@
 
   <!-- Loader -->
   <div class="relative flex flex-col items-center gap-4 z-10">
-    <div class="flex items-center justify-center gap-1">
+    <div class="flex items-center justify-center gap-1" id="loader-lines">
       <span class="line"></span>
       <span class="line"></span>
       <span class="line"></span>
       <span class="line"></span>
       <span class="line"></span>
     </div>
-    <span class="text-white font-medium tracking-wide">Loading with Love...</span>
+    <span id="loading-text" class="font-medium tracking-wide">Loading with Love...</span>
   </div>
 
   <!-- Hidden background music -->
@@ -98,6 +96,35 @@
     setTimeout(() => {
       window.location.href = redirectPage;
     }, 3000);
+
+    // === THEME SYNC ===
+    const themes = [
+      { bg: "linear-gradient(-45deg, #fdf2f8, #fde2e4, #e8eaf6, #f3e8ff)", text: "text-pink-700", line: "#ec4899" },
+      { bg: "linear-gradient(-45deg, #e0f7fa, #80deea, #b3e5fc, #e1f5fe)", text: "text-sky-700", line: "#0ea5e9" },
+      { bg: "linear-gradient(-45deg, #ede7f6, #d1c4e9, #b39ddb, #9575cd)", text: "text-purple-700", line: "#8b5cf6" }
+    ];
+
+    let themeIndex = localStorage.getItem("themeIndex") 
+      ? parseInt(localStorage.getItem("themeIndex")) 
+      : 0;
+
+    const body = document.body;
+    const loadingText = document.getElementById("loading-text");
+    const lines = document.querySelectorAll("#loader-lines .line");
+
+    // Apply theme
+    const theme = themes[themeIndex];
+    body.style.background = theme.bg;
+    body.style.backgroundSize = "400% 400%";
+    body.style.animation = "gradient 12s ease infinite";
+
+    // Update text
+    loadingText.className = `font-medium tracking-wide ${theme.text}`;
+
+    // Update line colors
+    lines.forEach(line => {
+      line.style.background = theme.line;
+    });
   </script>
 </body>
 </html>

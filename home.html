@@ -65,7 +65,7 @@
 
   <!-- HERO CARD -->
   <section class="relative z-10 max-w-2xl w-full mx-6 sm:mx-0 bg-white/60 backdrop-blur-md rounded-3xl shadow-xl p-8 sm:p-12 text-center border border-white/30">
-    <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold mb-6 text-pink-700 drop-shadow-md">
+    <h1 id="anniv" class="text-3xl sm:text-5xl md:text-6xl font-extrabold mb-6 text-pink-700 drop-shadow-md">
       Happy Anniversary
     </h1>
     <p class="text-base sm:text-lg md:text-xl leading-relaxed mb-10 text-gray-700">
@@ -110,16 +110,16 @@
     </svg>
   </button>
 
-  <!-- Floating Person Button -->
-  <a href="edit.html" aria-label="Edit Profile"
-     class="fixed bottom-5 left-5 bg-pink-600 hover:bg-pink-700 text-white rounded-full p-3 shadow-lg z-50">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
-         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" 
-            d="M5.121 17.804A9 9 0 1118.88 6.196 
-               M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-    </svg>
-  </a>
+<!-- Floating Person Button -->
+<button id="theme-btn" aria-label="Change Theme"
+  class="fixed bottom-5 left-5 bg-pink-600 text-white rounded-full p-3 shadow-lg z-50 transition duration-300">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+      viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round" 
+          d="M5.121 17.804A9 9 0 1118.88 6.196 
+             M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+  </svg>
+</button>
 
   <script>
     const music = document.getElementById('bg-music');
@@ -163,5 +163,70 @@
       }
     });
   </script>
+
+  
+<script>
+  const themeBtn = document.getElementById("theme-btn");
+  const anniv = document.getElementById("anniv");
+  const body = document.body;
+
+  const themes = [
+    { 
+      bg: "linear-gradient(-45deg, #fdf2f8, #fde2e4, #e8eaf6, #f3e8ff)", 
+      btn: "bg-pink-600 hover:bg-pink-700",
+      text: "text-pink-700"
+    },
+    { 
+      bg: "linear-gradient(-45deg, #e0f7fa, #80deea, #b3e5fc, #e1f5fe)", 
+      btn: "bg-sky-500 hover:bg-sky-600",
+      text: "text-sky-700"
+    },
+    { 
+      bg: "linear-gradient(-45deg, #ede7f6, #d1c4e9, #b39ddb, #9575cd)", 
+      btn: "bg-purple-500 hover:bg-purple-600",
+      text: "text-purple-700"
+    }
+  ];
+
+  let themeIndex = localStorage.getItem("themeIndex") 
+    ? parseInt(localStorage.getItem("themeIndex")) 
+    : 0;
+
+  // apply saved theme
+  applyTheme(themeIndex);
+
+  themeBtn.addEventListener("click", () => {
+    themeIndex = (themeIndex + 1) % themes.length;
+    localStorage.setItem("themeIndex", themeIndex);
+    applyTheme(themeIndex);
+  });
+
+  function applyTheme(index) {
+    // update background
+    body.style.background = themes[index].bg;
+    body.style.backgroundSize = "400% 400%";
+    body.style.animation = "gradient 15s ease infinite";
+
+    // update ALL pink/sky/purple buttons
+    document.querySelectorAll(".bg-pink-600, .bg-sky-500, .bg-purple-500").forEach(btn => {
+      btn.className = btn.className
+        .replace(/bg-(pink|sky|purple)-\d+ hover:bg-(pink|sky|purple)-\d+/g, "")
+        .trim();
+      btn.classList.add(...themes[index].btn.split(" "));
+    });
+
+    // update floating theme button itself
+    themeBtn.className = `fixed bottom-5 left-5 text-white rounded-full p-3 shadow-lg z-50 transition duration-300 ${themes[index].btn}`;
+
+    // update anniv text color 🎉
+    if (anniv) {
+      anniv.className = anniv.className
+        .replace(/text-(pink|sky|purple)-\d+/g, "")
+        .trim();
+      anniv.classList.add(themes[index].text);
+    }
+  }
+</script>
+
 </body>
 </html>

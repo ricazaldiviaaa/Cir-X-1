@@ -12,7 +12,6 @@
       100% { background-position: 0% 50%; }
     }
     .bg-animate {
-      background: linear-gradient(-45deg, #fff0f5, #fde2e4, #fce7f3, #fdf2f8);
       background-size: 400% 400%;
       animation: gradient 15s ease infinite;
     }
@@ -23,22 +22,27 @@
     @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
     .fade-in { animation: fadeInUp 1s ease forwards; }
     ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-thumb { background: rgba(236, 72, 153, 0.5); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.8); }
+    ::-webkit-scrollbar-thumb { border-radius: 10px; }
   </style>
 </head>
 <body class="min-h-screen bg-animate text-gray-800 font-sans relative overflow-hidden">
 
-  <!-- Floating decorations -->
-  <svg class="floaty left-1/4 w-8 h-8 text-pink-400" style="animation-duration: 7s;" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 21s-6.5-4.35-10-9.05C-1.1 7.54 1.75 2 7.5 2c2.4 0 4.6 1.21 5.5 3.09C13.9 3.21 16.1 2 18.5 2 24.25 2 27.1 7.54 22 11.95 18.5 16.65 12 21 12 21z"/>
-  </svg>
-  <svg class="floaty left-2/3 w-10 h-10 text-pink-300" style="animation-duration: 11s;" fill="currentColor" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="4"/>
-  </svg>
-  <svg class="floaty left-1/2 w-6 h-6 text-yellow-300" style="animation-duration: 9s;" fill="currentColor" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="2"/>
-  </svg>
+<!-- Floating decorations -->
+<svg id="float1" class="floaty left-1/4 w-8 h-8 text-pink-400" 
+     style="animation-duration: 7s;" viewBox="0 0 24 24" fill="currentColor">
+  <path d="M12 21s-6.5-4.35-10-9.05C-1.1 7.54 1.75 2 7.5 2c2.4 0 4.6 1.21 5.5 3.09C13.9 3.21 16.1 2 18.5 2 24.25 2 27.1 7.54 22 11.95 18.5 16.65 12 21 12 21z"/>
+</svg>
+
+<svg id="float2" class="floaty left-2/3 w-10 h-10 text-pink-300" 
+     style="animation-duration: 11s;" viewBox="0 0 24 24" fill="currentColor">
+  <circle cx="12" cy="12" r="4"/>
+</svg>
+
+<svg id="float3" class="floaty left-1/2 w-6 h-6 text-yellow-300" 
+     style="animation-duration: 9s;" viewBox="0 0 24 24" fill="currentColor">
+  <circle cx="12" cy="12" r="2"/>
+</svg>
+
 
   <!-- Hidden Audio -->
   <audio id="bg-music" loop autoplay style="display:none;">
@@ -48,7 +52,7 @@
   <!-- Content -->
   <div class="relative z-10 flex flex-col px-4 sm:px-6 py-6 sm:py-10 fade-in">
     <!-- Back button -->
-    <a href="home.html" class="self-start mb-4 sm:mb-6 inline-flex items-center text-pink-700 hover:text-pink-900 transition">
+    <a id="backBtn" href="home.html" class="self-start mb-4 sm:mb-6 inline-flex items-center transition">
       <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
       </svg>
@@ -57,7 +61,7 @@
 
     <!-- Message card -->
     <div class="flex-1 max-w-3xl mx-auto w-full bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-5 sm:p-8 md:p-10 flex flex-col glow-card">
-      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-6 text-pink-700 text-center">
+      <h2 id="title" class="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-6 text-center">
         My Message to You
       </h2>
       <div class="overflow-y-auto pr-2" style="max-height: 65vh;">
@@ -85,25 +89,86 @@
 <script>
   const audio = document.getElementById("bg-music");
 
-  // Restore state on load
+  // 🎶 Music persistence
   window.addEventListener("DOMContentLoaded", () => {
     const savedTime = localStorage.getItem("music-time");
     const isPlaying = localStorage.getItem("music-playing");
 
     if (savedTime) audio.currentTime = parseFloat(savedTime);
+    if (isPlaying === "true") audio.play().catch(()=>{});
+    else audio.pause();
 
-    if (isPlaying === "true") {
-      audio.play().catch(()=>{});
-    } else {
-      audio.pause();
-    }
+    // 🎨 Apply saved theme
+    let themeIndex = localStorage.getItem("themeIndex") 
+      ? parseInt(localStorage.getItem("themeIndex")) 
+      : 0;
+    applyTheme(themeIndex);
   });
 
-  // Save state before leaving
   window.addEventListener("beforeunload", () => {
     localStorage.setItem("music-time", audio.currentTime);
     localStorage.setItem("music-playing", !audio.paused);
   });
+
+  // 🎨 Theme system (shared with other pages)
+  const title = document.getElementById("title");
+  const backBtn = document.getElementById("backBtn");
+  const float1 = document.getElementById("float1");
+  const float2 = document.getElementById("float2");
+  const float3 = document.getElementById("float3");
+
+  const themes = [
+    { 
+      bg: "linear-gradient(-45deg, #fdf2f8, #fde2e4, #e8eaf6, #f3e8ff)", 
+      text: "text-pink-700 hover:text-pink-900",
+      float: ["text-pink-400","text-pink-300","text-yellow-300"],
+      scrollbar: "rgba(236, 72, 153"
+    },
+    { 
+      bg: "linear-gradient(-45deg, #e0f7fa, #80deea, #b3e5fc, #e1f5fe)", 
+      text: "text-sky-700 hover:text-sky-900",
+      float: ["text-sky-400","text-sky-300","text-cyan-300"],
+      scrollbar: "rgba(14, 165, 233"
+    },
+    { 
+      bg: "linear-gradient(-45deg, #ede7f6, #d1c4e9, #b39ddb, #9575cd)", 
+      text: "text-purple-700 hover:text-purple-900",
+      float: ["text-purple-400","text-purple-300","text-indigo-300"],
+      scrollbar: "rgba(126, 34, 206"
+    }
+  ];
+
+  function applyTheme(index) {
+    document.body.style.background = themes[index].bg;
+    document.body.style.backgroundSize = "400% 400%";
+    document.body.style.animation = "gradient 15s ease infinite";
+
+    // title + back
+    title.className = title.className.replace(/text-(pink|sky|purple)-700/g, "").trim();
+    title.classList.add(themes[index].text.split(" ")[0]);
+
+    backBtn.className = backBtn.className
+      .replace(/text-(pink|sky|purple)-700 hover:text-(pink|sky|purple)-900/g, "")
+      .trim() + " " + themes[index].text;
+
+    // float colors
+    [float1, float2, float3].forEach((el, i) => {
+      el.className = el.className.replace(/text-(pink|sky|purple|yellow|cyan|indigo)-\d+/g,"").trim();
+      el.classList.add(themes[index].float[i]);
+    });
+
+    // scrollbar
+    const styleTag = document.createElement("style");
+    styleTag.innerHTML = `
+      ::-webkit-scrollbar-thumb {
+        background: ${themes[index].scrollbar}, 0.5);
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: ${themes[index].scrollbar}, 0.8);
+      }
+    `;
+    document.head.appendChild(styleTag);
+  }
 </script>
 
 </body>

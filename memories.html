@@ -165,6 +165,75 @@
     localStorage.setItem("music-playing", (!audio.paused).toString());
   }, 1000);
 </script>
+<script>
+  const themeBtn = document.getElementById("theme-btn");
+  const body = document.body;
+  const header = document.querySelector("h2"); // main title
+  const caption = document.getElementById("modalCaption");
+  const links = document.querySelectorAll("a"); // all links like "Back"
+
+  const themes = [
+    { 
+      bg: "linear-gradient(-45deg, #fdf2f8, #fde2e4, #e8eaf6, #f3e8ff)", 
+      btn: "bg-pink-600 hover:bg-pink-700",
+      text: "text-pink-700",
+      link: "text-pink-700 hover:text-pink-900"
+    },
+    { 
+      bg: "linear-gradient(-45deg, #e0f7fa, #80deea, #b3e5fc, #e1f5fe)", 
+      btn: "bg-sky-500 hover:bg-sky-600",
+      text: "text-sky-700",
+      link: "text-sky-700 hover:text-sky-900"
+    },
+    { 
+      bg: "linear-gradient(-45deg, #ede7f6, #d1c4e9, #b39ddb, #9575cd)", 
+      btn: "bg-purple-500 hover:bg-purple-600",
+      text: "text-purple-700",
+      link: "text-purple-700 hover:text-purple-900"
+    }
+  ];
+
+  let themeIndex = localStorage.getItem("themeIndex") 
+    ? parseInt(localStorage.getItem("themeIndex")) 
+    : 0;
+
+  // apply saved theme
+  applyTheme(themeIndex);
+
+  themeBtn.addEventListener("click", () => {
+    themeIndex = (themeIndex + 1) % themes.length;
+    localStorage.setItem("themeIndex", themeIndex);
+    applyTheme(themeIndex);
+  });
+
+  function applyTheme(index) {
+    // background
+    body.style.background = themes[index].bg;
+    body.style.backgroundSize = "400% 400%";
+    body.style.animation = "gradient 15s ease infinite";
+
+    // button color
+    themeBtn.className = `fixed bottom-5 left-5 text-white rounded-full p-3 shadow-lg z-50 transition duration-300 ${themes[index].btn}`;
+
+    // header text
+    header.className = header.className
+      .replace(/text-(pink|sky|purple)-700/g, "")
+      .trim() + " " + themes[index].text;
+
+    // modal caption text
+    caption.className = caption.className
+      .replace(/text-(pink|sky|purple)-800/g, "")
+      .trim() + " " + themes[index].text.replace("700","800");
+
+    // update all <a> links
+    links.forEach(link => {
+      link.className = link.className
+        .replace(/text-(pink|sky|purple)-700 hover:text-(pink|sky|purple)-900/g, "")
+        .trim() + " " + themes[index].link;
+    });
+  }
+</script>
+
 
 </body>
 </html>
